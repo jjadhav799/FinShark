@@ -1,33 +1,40 @@
 pipeline {
-    agent any
-
-    stages {
-        stage('Checkout Code') {
-            steps {
-                git branch: 'main', url: 'https://github.com/jjadhav799/FinShark.git'
-            }
-        }
-
-        stage('Build Docker Image') {
-            steps {
-                script {
-                    dockerImage = docker.build("finshark-app:latest")
-                }
-            }
-        }
-
-        stage('Run Container') {
-            steps {
-                script {
-                    dockerImage.run('-d -p 3000:3000')
-                }
-            }
+    agent {
+        docker {
+            image 'node:18'    // use your app base image
+            args '-p 3000:3000'
         }
     }
 
-    post {
-        always {
-            echo "Build and container run stage completed!"
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main', credentialsId: 'github-creds', url: 'https://github.com/<your-username>/<your-repo>.git'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh 'npm install'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                sh 'npm test || echo "Tests skipped"'
+            }
+        }
+
+        stage('Docker Build') {
+            steps {
+                sh 'docker build -t my-app:latest .'
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                sh 'echo "Deployment step (to container / VM / cloud) goes here"'
+            }
         }
     }
 }
