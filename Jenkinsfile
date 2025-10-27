@@ -2,7 +2,7 @@ pipeline {
     agent {
         docker {
             image 'node:18'    // use your app base image
-            args '-p 3000:3000'
+            args '-p 3001:3000'
         }
     }
 
