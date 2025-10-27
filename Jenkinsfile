@@ -1,13 +1,7 @@
 pipeline {
-    agent {
-        docker {
-            image 'node:18'    // Use your app base image
-            args '-p 3001:3000'
-        }
-    }
+    agent any
 
     stages {
-
         stage('Checkout') {
             steps {
                 git url: 'https://github.com/jjadhav799/FinShark.git',
@@ -39,7 +33,5 @@ pipeline {
                 sh 'echo "Deployment step (to container / VM / cloud) goes here"'
             }
         }
-
-    } // ← end of stages
-
-} // ← end of pipeline
+    }
+}
