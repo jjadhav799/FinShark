@@ -2,8 +2,9 @@ pipeline {
     agent any
 
     environment {
-        NUGET_PACKAGES = "${WORKSPACE}/.nuget/packages"
+        WORK_DIR = "${WORKSPACE}"
         DOTNET_CLI_HOME = "${WORKSPACE}/.dotnet"
+        NUGET_PACKAGES = "${WORKSPACE}/.nuget/packages"
         HOME = "${WORKSPACE}"
     }
 
@@ -26,7 +27,7 @@ pipeline {
                     mkdir -p $WORKSPACE/.nuget/packages
                     mkdir -p $WORKSPACE/.dotnet
                     chmod -R 777 $WORKSPACE
-                    dotnet restore
+                    dotnet restore --configfile /etc/nuget.config --packages $WORKSPACE/.nuget/packages
                 '''
             }
         }
@@ -39,7 +40,11 @@ pipeline {
                 }
             }
             steps {
-                sh 'dotnet build --configuration Release'
+                sh '''
+                    dotnet build --configuration Release \
+                        --packages $WORKSPACE/.nuget/packages \
+                        --source "https://api.nuget.org/v3/index.json"
+                '''
             }
         }
 
