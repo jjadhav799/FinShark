@@ -1,6 +1,11 @@
 pipeline {
     agent any
 
+    environment {
+        DOTNET_CLI_HOME = '/tmp'
+        HOME = '/tmp'
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -12,13 +17,15 @@ pipeline {
             agent {
                 docker {
                     image 'mcr.microsoft.com/dotnet/sdk:8.0'
-                     // ✅ Writable directory
-                    args '-u root -e DOTNET_CLI_HOME=/tmp -v /tmp:/tmp'
-
+                    args '-u root' // run as root to avoid permission denied
                 }
             }
             steps {
-                sh 'dotnet restore'
+                sh '''
+                    mkdir -p /tmp/.nuget
+                    chmod -R 777 /tmp
+                    dotnet restore
+                '''
             }
         }
 
@@ -26,11 +33,14 @@ pipeline {
             agent {
                 docker {
                     image 'mcr.microsoft.com/dotnet/sdk:8.0'
-                    args '-e DOTNET_CLI_HOME=/tmp -v /tmp:/tmp'  // ✅ Writable directory
+                    args '-u root'
                 }
             }
             steps {
-                sh 'dotnet build --configuration Release'
+                sh '''
+                    chmod -R 777 /tmp
+                    dotnet build --configuration Release
+                '''
             }
         }
 
@@ -38,11 +48,14 @@ pipeline {
             agent {
                 docker {
                     image 'mcr.microsoft.com/dotnet/sdk:8.0'
-                    args '-e DOTNET_CLI_HOME=/tmp -v /tmp:/tmp'  // ✅ Writable directory
+                    args '-u root'
                 }
             }
             steps {
-                sh 'dotnet test --no-build --verbosity normal'
+                sh '''
+                    chmod -R 777 /tmp
+                    dotnet test --no-build --verbosity normal
+                '''
             }
         }
 
@@ -50,11 +63,14 @@ pipeline {
             agent {
                 docker {
                     image 'mcr.microsoft.com/dotnet/sdk:8.0'
-                    args '-e DOTNET_CLI_HOME=/tmp -v /tmp:/tmp'  // ✅ Writable directory
+                    args '-u root'
                 }
             }
             steps {
-                sh 'dotnet publish -c Release -o out'
+                sh '''
+                    chmod -R 777 /tmp
+                    dotnet publish -c Release -o out
+                '''
             }
         }
 
