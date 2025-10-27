@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'master', url: 'git@github.com:jjadhav799/your-dotnet-repo.git'
+                git branch: 'master', url: 'https://github.com/jjadhav799/FinShark.git'
             }
         }
 
