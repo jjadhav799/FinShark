@@ -9,24 +9,44 @@ pipeline {
         }
 
         stage('Restore dependencies') {
+            agent {
+                docker {
+                    image 'mcr.microsoft.com/dotnet/sdk:8.0'
+                }
+            }
             steps {
                 sh 'dotnet restore'
             }
         }
 
         stage('Build') {
+            agent {
+                docker {
+                    image 'mcr.microsoft.com/dotnet/sdk:8.0'
+                }
+            }
             steps {
                 sh 'dotnet build --configuration Release'
             }
         }
 
         stage('Test') {
+            agent {
+                docker {
+                    image 'mcr.microsoft.com/dotnet/sdk:8.0'
+                }
+            }
             steps {
                 sh 'dotnet test --no-build --verbosity normal'
             }
         }
 
         stage('Publish') {
+            agent {
+                docker {
+                    image 'mcr.microsoft.com/dotnet/sdk:8.0'
+                }
+            }
             steps {
                 sh 'dotnet publish -c Release -o out'
             }
@@ -34,7 +54,7 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                echo 'Deploy your .NET app (e.g., copy files, run docker build, etc.)'
+                echo '🚀 Deploy your .NET app here (e.g., docker build & push, copy files, etc.)'
             }
         }
     }
