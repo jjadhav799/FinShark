@@ -12,7 +12,7 @@ pipeline {
             agent {
                 docker {
                     image 'mcr.microsoft.com/dotnet/sdk:8.0'
-                    args '-e DOTNET_CLI_HOME=/tmp'   // ✅ Fixes permission issue
+                    args '-e DOTNET_CLI_HOME=/tmp -v /tmp:/tmp'  // ✅ Writable directory
                 }
             }
             steps {
@@ -24,7 +24,7 @@ pipeline {
             agent {
                 docker {
                     image 'mcr.microsoft.com/dotnet/sdk:8.0'
-                    args '-e DOTNET_CLI_HOME=/tmp'   // ✅ Fixes permission issue
+                    args '-e DOTNET_CLI_HOME=/tmp -v /tmp:/tmp'  // ✅ Writable directory
                 }
             }
             steps {
@@ -36,7 +36,7 @@ pipeline {
             agent {
                 docker {
                     image 'mcr.microsoft.com/dotnet/sdk:8.0'
-                    args '-e DOTNET_CLI_HOME=/tmp'   // ✅ Fixes permission issue
+                    args '-e DOTNET_CLI_HOME=/tmp -v /tmp:/tmp'  // ✅ Writable directory
                 }
             }
             steps {
@@ -48,7 +48,7 @@ pipeline {
             agent {
                 docker {
                     image 'mcr.microsoft.com/dotnet/sdk:8.0'
-                    args '-e DOTNET_CLI_HOME=/tmp'   // ✅ Fixes permission issue
+                    args '-e DOTNET_CLI_HOME=/tmp -v /tmp:/tmp'  // ✅ Writable directory
                 }
             }
             steps {
