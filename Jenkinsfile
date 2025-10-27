@@ -1,18 +1,20 @@
 pipeline {
     agent {
         docker {
-            image 'node:18'    // use your app base image
+            image 'node:18'    // Use your app base image
             args '-p 3001:3000'
         }
     }
 
-stage('Checkout') {
-    steps {
-        git url: 'https://github.com/jjadhav799/FinShark.git',
-            branch: 'master',
-            credentialsId: 'jjadhav799'  // use the same ID that worked earlier
-    }
-}
+    stages {
+
+        stage('Checkout') {
+            steps {
+                git url: 'https://github.com/jjadhav799/FinShark.git',
+                    branch: 'master',
+                    credentialsId: 'jjadhav799'
+            }
+        }
 
         stage('Build') {
             steps {
@@ -37,5 +39,7 @@ stage('Checkout') {
                 sh 'echo "Deployment step (to container / VM / cloud) goes here"'
             }
         }
-    }
-}
+
+    } // ← end of stages
+
+} // ← end of pipeline
