@@ -2,8 +2,9 @@ pipeline {
     agent any
 
     environment {
-        DOTNET_CLI_HOME = '/tmp'
-        HOME = '/tmp'
+        NUGET_PACKAGES = "${WORKSPACE}/.nuget/packages"
+        DOTNET_CLI_HOME = "${WORKSPACE}/.dotnet"
+        HOME = "${WORKSPACE}"
     }
 
     stages {
@@ -17,13 +18,14 @@ pipeline {
             agent {
                 docker {
                     image 'mcr.microsoft.com/dotnet/sdk:8.0'
-                    args '-u root' // run as root to avoid permission denied
+                    args '-u root'
                 }
             }
             steps {
                 sh '''
-                    mkdir -p /tmp/.nuget
-                    chmod -R 777 /tmp
+                    mkdir -p $WORKSPACE/.nuget/packages
+                    mkdir -p $WORKSPACE/.dotnet
+                    chmod -R 777 $WORKSPACE
                     dotnet restore
                 '''
             }
@@ -37,10 +39,7 @@ pipeline {
                 }
             }
             steps {
-                sh '''
-                    chmod -R 777 /tmp
-                    dotnet build --configuration Release
-                '''
+                sh 'dotnet build --configuration Release'
             }
         }
 
@@ -52,10 +51,7 @@ pipeline {
                 }
             }
             steps {
-                sh '''
-                    chmod -R 777 /tmp
-                    dotnet test --no-build --verbosity normal
-                '''
+                sh 'dotnet test --no-build --verbosity normal'
             }
         }
 
@@ -67,16 +63,13 @@ pipeline {
                 }
             }
             steps {
-                sh '''
-                    chmod -R 777 /tmp
-                    dotnet publish -c Release -o out
-                '''
+                sh 'dotnet publish -c Release -o out'
             }
         }
 
         stage('Deploy') {
             steps {
-                echo '🚀 Deploy your .NET app here (e.g., docker build & push, copy files, etc.)'
+                echo '🚀 Deployment step goes here!'
             }
         }
     }
