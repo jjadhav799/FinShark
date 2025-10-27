@@ -12,7 +12,9 @@ pipeline {
             agent {
                 docker {
                     image 'mcr.microsoft.com/dotnet/sdk:8.0'
-                    args '-e DOTNET_CLI_HOME=/tmp -v /tmp:/tmp'  // ✅ Writable directory
+                     // ✅ Writable directory
+                    args '-u root -e DOTNET_CLI_HOME=/tmp -v /tmp:/tmp'
+
                 }
             }
             steps {
