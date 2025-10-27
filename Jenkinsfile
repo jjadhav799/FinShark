@@ -4,33 +4,37 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git url: 'https://github.com/jjadhav799/FinShark.git',
-                    branch: 'master',
-                    credentialsId: 'jjadhav799'
+                git branch: 'master', url: 'git@github.com:yourusername/your-dotnet-repo.git'
+            }
+        }
+
+        stage('Restore dependencies') {
+            steps {
+                sh 'dotnet restore'
             }
         }
 
         stage('Build') {
             steps {
-                sh 'npm install'
+                sh 'dotnet build --configuration Release'
             }
         }
 
         stage('Test') {
             steps {
-                sh 'npm test || echo "Tests skipped"'
+                sh 'dotnet test --no-build --verbosity normal'
             }
         }
 
-        stage('Docker Build') {
+        stage('Publish') {
             steps {
-                sh 'docker build -t my-app:latest .'
+                sh 'dotnet publish -c Release -o out'
             }
         }
 
         stage('Deploy') {
             steps {
-                sh 'echo "Deployment step (to container / VM / cloud) goes here"'
+                echo 'Deploy your .NET app (e.g., copy files, run docker build, etc.)'
             }
         }
     }
