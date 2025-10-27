@@ -6,12 +6,13 @@ pipeline {
         }
     }
 
-    stages {
-        stage('Checkout') {
-            steps {
-                git branch: 'main', credentialsId: 'github-creds', url: 'https://github.com/<your-username>/<your-repo>.git'
-            }
-        }
+stage('Checkout') {
+    steps {
+        git url: 'https://github.com/jjadhav799/FinShark.git',
+            branch: 'master',
+            credentialsId: 'jjadhav799'  // use the same ID that worked earlier
+    }
+}
 
         stage('Build') {
             steps {
