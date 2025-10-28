@@ -60,7 +60,7 @@ pipeline {
                 }
             }
             steps {
-                mkdir -p /var/jenkins_home/workspace/My-Docker-CI-CD@2/tmp /var/jenkins_home/workspace/My-Docker-CI-CD@2/.dotnet
+                sh '''mkdir -p /var/jenkins_home/workspace/My-Docker-CI-CD@2/tmp /var/jenkins_home/workspace/My-Docker-CI-CD@2/.dotnet
 chmod -R 777 /var/jenkins_home/workspace/My-Docker-CI-CD@2
 
 export HOME=/var/jenkins_home/workspace/My-Docker-CI-CD@2
@@ -70,7 +70,7 @@ export NUGET_PACKAGES=/var/jenkins_home/workspace/My-Docker-CI-CD@2/.nuget/packa
 dotnet restore
 dotnet build --configuration Release
 dotnet test --no-build --verbosity normal
-
+'''
                 sh 'dotnet test --no-build --verbosity normal'
                 
             }
