@@ -23,7 +23,9 @@ pipeline {
                     export DOTNET_CLI_HOME=$WORKSPACE/.dotnet
                     export NUGET_PACKAGES=$WORKSPACE/.nuget/packages
                     echo "✅ Custom environment ready for restore"
-                    dotnet restore --packages $NUGET_PACKAGES
+                   dotnet restore --configfile /var/jenkins_home/NuGet.Config --packages /var/jenkins_home/.nuget/packages
+dotnet build --configuration Release --packages /var/jenkins_home/.nuget/packages
+
                 '''
             }
         }
