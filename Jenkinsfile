@@ -23,8 +23,10 @@ pipeline {
                     export DOTNET_CLI_HOME=$WORKSPACE/.dotnet
                     export NUGET_PACKAGES=$WORKSPACE/.nuget/packages
                     echo "✅ Custom environment ready for restore"
-                   dotnet restore --configfile /var/jenkins_home/NuGet.Config --packages /var/jenkins_home/.nuget/packages
-dotnet build --configuration Release --packages /var/jenkins_home/.nuget/packages
+                    dotnet build --configuration Release --packages $NUGET_PACKAGES
+                    dotnet restore --configfile /var/jenkins_home/NuGet.Config --packages /var/jenkins_home/.nuget/packages
+
+
 
                 '''
             }
@@ -41,13 +43,12 @@ dotnet build --configuration Release --packages /var/jenkins_home/.nuget/package
                 sh '''
                 export NUGET_PACKAGES=/var/jenkins_home/.nuget/packages
                     mkdir -p $WORKSPACE/tmp $WORKSPACE/.nuget
-                    dotnet build --configuration Release
                     chmod -R 777 $WORKSPACE
                     export HOME=$WORKSPACE
                     export DOTNET_CLI_HOME=$WORKSPACE/.dotnet
                     export NUGET_PACKAGES=$WORKSPACE/.nuget/packages
                     echo "🏗️  Building project safely..."
-                    dotnet build --configuration Release --packages $NUGET_PACKAGES
+                   
                 '''
             }
         }
