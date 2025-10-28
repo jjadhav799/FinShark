@@ -39,6 +39,7 @@ dotnet build --configuration Release --packages /var/jenkins_home/.nuget/package
             }
             steps {
                 sh '''
+                export NUGET_PACKAGES=/var/jenkins_home/.nuget/packages
                     mkdir -p $WORKSPACE/tmp $WORKSPACE/.nuget
                     chmod -R 777 $WORKSPACE
                     export HOME=$WORKSPACE
