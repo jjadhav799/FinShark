@@ -15,13 +15,13 @@ pipeline {
             }
         }
 
-       stage('Restore dependencies') {
-    agent {
-        docker {
-            image 'mcr.microsoft.com/dotnet/sdk:8.0'
-            args '-u root'
-        }
-    }
+      stage('Restore dependencies') {
+            agent {
+                docker {
+                    image 'mcr.microsoft.com/dotnet/sdk:8.0'
+                    args '-u root -v $WORKSPACE/tmp:/tmp -v $WORKSPACE/.nuget:/root/.nuget'
+                }
+            }
     steps {
         sh '''
             export HOME=$WORKSPACE
@@ -42,21 +42,21 @@ stage('Build') {
     agent {
         docker {
             image 'mcr.microsoft.com/dotnet/sdk:8.0'
-            args '-u root'
+            args '-u root -v $WORKSPACE/tmp:/tmp -v $WORKSPACE/.nuget:/root/.nuget'
         }
     }
-    steps {
-        sh '''
-            export HOME=$WORKSPACE
-            export DOTNET_CLI_HOME=$WORKSPACE/.dotnet
-            export NUGET_PACKAGES=$WORKSPACE/.nuget/packages
-            mkdir -p $DOTNET_CLI_HOME $NUGET_PACKAGES
-            chmod -R 777 $WORKSPACE
-            dotnet build --configuration Release --packages $NUGET_PACKAGES
-        '''
-    }
-}
-
+        steps {
+                sh '''
+                    mkdir -p $WORKSPACE/tmp $WORKSPACE/.nuget
+                    chmod -R 777 $WORKSPACE
+                    export HOME=$WORKSPACE
+                    export DOTNET_CLI_HOME=$WORKSPACE/.dotnet
+                    export NUGET_PACKAGES=$WORKSPACE/.nuget/packages
+                    echo "🏗️  Building project safely..."
+                    dotnet build --configuration Release --packages $NUGET_PACKAGES
+                '''
+            }
+        }  
 
         stage('Test') {
             agent {
