@@ -15,38 +15,48 @@ pipeline {
             }
         }
 
-        stage('Restore dependencies') {
-            agent {
-                docker {
-                    image 'mcr.microsoft.com/dotnet/sdk:8.0'
-                    args '-u root'
-                }
-            }
-            steps {
-                sh '''
-                    mkdir -p $WORKSPACE/.nuget/packages
-                    mkdir -p $WORKSPACE/.dotnet
-                    chmod -R 777 $WORKSPACE
-                    dotnet restore --configfile /etc/nuget.config --packages $WORKSPACE/.nuget/packages
-                '''
-            }
+       stage('Restore dependencies') {
+    agent {
+        docker {
+            image 'mcr.microsoft.com/dotnet/sdk:8.0'
+            args '-u root'
         }
+    }
+    steps {
+        sh '''
+            export HOME=$WORKSPACE
+            export DOTNET_CLI_HOME=$WORKSPACE/.dotnet
+            export NUGET_PACKAGES=$WORKSPACE/.nuget/packages
+            mkdir -p $DOTNET_CLI_HOME $NUGET_PACKAGES
+            chmod -R 777 $WORKSPACE
+            echo "✅ Environment paths configured:"
+            echo "HOME=$HOME"
+            echo "DOTNET_CLI_HOME=$DOTNET_CLI_HOME"
+            echo "NUGET_PACKAGES=$NUGET_PACKAGES"
+            dotnet restore --packages $NUGET_PACKAGES
+        '''
+    }
+}
 
-        stage('Build') {
-            agent {
-                docker {
-                    image 'mcr.microsoft.com/dotnet/sdk:8.0'
-                    args '-u root'
-                }
-            }
-            steps {
-                sh '''
-                    dotnet build --configuration Release \
-                        --packages $WORKSPACE/.nuget/packages \
-                        --source "https://api.nuget.org/v3/index.json"
-                '''
-            }
+stage('Build') {
+    agent {
+        docker {
+            image 'mcr.microsoft.com/dotnet/sdk:8.0'
+            args '-u root'
         }
+    }
+    steps {
+        sh '''
+            export HOME=$WORKSPACE
+            export DOTNET_CLI_HOME=$WORKSPACE/.dotnet
+            export NUGET_PACKAGES=$WORKSPACE/.nuget/packages
+            mkdir -p $DOTNET_CLI_HOME $NUGET_PACKAGES
+            chmod -R 777 $WORKSPACE
+            dotnet build --configuration Release --packages $NUGET_PACKAGES
+        '''
+    }
+}
+
 
         stage('Test') {
             agent {
