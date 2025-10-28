@@ -67,9 +67,7 @@ export HOME=/var/jenkins_home/workspace/My-Docker-CI-CD@2
 export DOTNET_CLI_HOME=/var/jenkins_home/workspace/My-Docker-CI-CD@2/.dotnet
 export NUGET_PACKAGES=/var/jenkins_home/workspace/My-Docker-CI-CD@2/.nuget/packages
 
-dotnet restore
-dotnet build --configuration Release
-dotnet test --no-build --verbosity normal
+
 '''
                 sh 'dotnet test --no-build --verbosity normal'
                 
